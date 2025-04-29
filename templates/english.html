@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prashanth Pickles - Order Form</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #fff8e1;
+      padding: 50px;
+    }
+
+    h1 {
+      color: #d32f2f;
+    }
+
+    form {
+      display: inline-block;
+      text-align: left;
+      background-color: #fbe9e7;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-size: 16px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .name-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .name-grid div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 140px;
+      padding: 10px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .name-grid p {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #333;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .name-grid img {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      text-align: center;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c2185b;
+    }
+
+    .total-cost {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #d32f2f;
+    }
+
+    .order-list {
+      margin-top: 10px;
+      text-align: left;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Order Fish Pickles</h1>
+
+  <form action="/submit" method="POST" onsubmit="return validateSelection()">
+    <label for="name">Your Name:</label>
+    <input type="text" id="name" name="name" required maxlength="15">
+
+    <label for="phone">Phone Number / WhatsApp:</label>
+    <input type="tel" id="phone" name="phone" required>
+
+    <label for="landmark">Nearby Landmark:</label>
+    <input type="text" id="landmark" name="landmark" required>
+
+    <label for="address">Full Address:</label>
+    <textarea id="address" name="address" rows="4" required></textarea>
+
+    <label for="pincode">Pin Code:</label>
+    <input type="text" id="pincode" name="pincode" value="504106" required>
+
+    <label>Select Fish Pickles:</label>
+    <div class="name-grid">
+      <!-- Repeat block for each pickle -->
+      <div>
+        <p onclick="selectPickle('Seer Fish Pickle')">
+          <img src="https://tiimg.tistatic.com/fp/1/004/141/seer-fish-pickles-176.jpg" />
+          Seer Fish Pickle
+        </p>
+        <input type="number" id="qty1" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost1">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Kalans Fish Pickle')">
+          <img src="https://tiimg.tistatic.com/fp/1/008/598/kalans-food-fish-pickle-067.jpg" />
+          Kalans Fish Pickle
+        </p>
+        <input type="number" id="qty2" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost2">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Tasty Nibbles Fish Pickle')">
+          <img src="https://www.tastynibbles.in/cdn/shop/products/fishpickle1_1080x.jpg?v=1672901660" />
+          Tasty Nibbles Fish Pickle
+        </p>
+        <input type="number" id="qty3" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost3">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Purely South Nethili Fish Pickle')">
+          <img src="https://purelysouth.com/cdn/shop/files/PurelySouthNethilifishpickle.jpg?v=1700451112&width=533" />
+          Purely South Nethili Fish Pickle
+        </p>
+        <input type="number" id="qty4" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost4">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('JD MagicBox Fish Pickle')">
+          <img src="https://images.jdmagicbox.com/quickquotes/images_main/fish-pickle-2m4n693r.png" />
+          JD MagicBox Fish Pickle
+        </p>
+        <input type="number" id="qty5" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost5">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Home Style Fish Pickle')">
+          <img src="https://m.media-amazon.com/images/I/71uJdEKC1uL._AC_UF1000,1000_QL80_.jpg" />
+          Home Style Fish Pickle
+        </p>
+        <input type="number" id="qty6" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost6">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Prawn Fish Pickle')">
+          <img src="https://5.imimg.com/data5/SELLER/Default/2021/10/CF/KH/OZ/142161234/prawn-pickle.jpg" />
+          Prawn Fish Pickle
+        </p>
+        <input type="number" id="qty7" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost7">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Mother’s Recipe Fish Pickle')">
+          <img src="https://www.bigbasket.com/media/uploads/p/l/40075594_1-mothers-recipe-fish-pickle.jpg" />
+          Mother’s Recipe Fish Pickle
+        </p>
+        <input type="number" id="qty8" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost8">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Sapna Fish Pickle')">
+          <img src="https://www.jiomart.com/images/product/original/rvcdzzkpik/sapna-s-fish-pickle-250-g-product-images-orvcdzzkpik-p593754128-0-202304281432.jpg" />
+          Sapna Fish Pickle
+        </p>
+        <input type="number" id="qty9" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost9">Cost: ₹0</p>
+      </div>
+      <div>
+        <p onclick="selectPickle('Karimeen Fish Pickle')">
+          <img src="https://cdn.shopify.com/s/files/1/0281/2725/6084/products/IMG_20221204_110759.jpg?v=1670142034" />
+          Karimeen Fish Pickle
+        </p>
+        <input type="number" id="qty10" placeholder="Qty" min="1" oninput="updateCost()">
+        <p class="cost" id="cost10">Cost: ₹0</p>
+      </div>
+    </div>
+
+    <!-- Display total -->
+    <div class="total-cost">Total Cost: ₹<span id="totalCost">0</span></div>
+    <ul class="order-list" id="selectedPicklesList"></ul>
+
+    <!-- Hidden fields for backend -->
+    <input type="hidden" id="pickles" name="pickles">
+    <input type="hidden" id="total" name="total">
+
+    <button type="submit">Place Order</button>
+  </form>
+
+  <script>
+    const picklePrices = {
+      'Seer Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Kalans Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Tasty Nibbles Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Purely South Nethili Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'JD MagicBox Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Home Style Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Prawn Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Mother’s Recipe Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Sapna Fish Pickle': Math.floor(Math.random() * 100) + 50,
+      'Karimeen Fish Pickle': Math.floor(Math.random() * 100) + 50
+    };
+
+    window.onload = function() {
+      const keys = Object.keys(picklePrices);
+      for (let i = 1; i <= 10; i++) {
+        const name = keys[i - 1];
+        document.getElementById(`cost${i}`).textContent = `Cost: ₹${picklePrices[name]}`;
+      }
+    };
+
+    function selectPickle(name) {
+      alert('You selected ' + name);
+    }
+
+    function updateCost() {
+      let totalCost = 0;
+      let selectedPickles = [];
+
+      const keys = Object.keys(picklePrices);
+      for (let i = 1; i <= 10; i++) {
+        const qtyInput = document.getElementById(`qty${i}`);
+        const qty = parseInt(qtyInput.value) || 0;
+        const name = keys[i - 1];
+        const unitCost = picklePrices[name];
+        const cost = qty * unitCost;
+
+        if (qty > 0) {
+          selectedPickles.push(`${name}: ${qty} units`);
+        }
+
+        totalCost += cost;
+      }
+
+      document.getElementById('totalCost').textContent = totalCost;
+      document.getElementById('total').value = totalCost;
+
+      const list = document.getElementById('selectedPicklesList');
+      list.innerHTML = '';
+      selectedPickles.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    function validateSelection() {
+      let selected = [];
+      const keys = Object.keys(picklePrices);
+
+      for (let i = 1; i <= 10; i++) {
+        const qtyInput = document.getElementById(`qty${i}`);
+        const qty = qtyInput.value.trim();
+        if (qty && parseInt(qty) > 0) {
+          selected.push(`• ${keys[i - 1]}: ${qty}`);
+        }
+      }
+
+      if (selected.length === 0) {
+        alert("Please select at least one pickle with quantity!");
+        return false;
+      }
+
+      document.getElementById('pickles').value = selected.join("\n");
+      document.getElementById('total').value = document.getElementById('totalCost').textContent;
+      return true;
+    }
+  </script>
+</body>
+</html>
