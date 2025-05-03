@@ -1,24 +1,19 @@
 from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
-from urllib.parse import quote_plus
+import os
 
 app = Flask(__name__)
 
-# MongoDB Configuration
-username = "paterinikhil0888"
-password = "nikhil@1642"
-encoded_username = quote_plus(username)
-encoded_password = quote_plus(password)
-
-app.config["MONGO_URI"] = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.6wjy4p3.mongodb.net/nikhil?retryWrites=true&w=majority"
+# MongoDB from environment
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 
-# Twilio Configuration
-account_sid = "ACb25108dd17d23630af6fca15bb4d941c"
-auth_token = "742dcbcd4b8e31ac3814ef92ae047ff8"
-FROM_PHONE = "+16625032708"
-TO_PHONE = "+919390286430"
+# Twilio from environment
+account_sid = os.environ.get("TWILIO_SID")
+auth_token = os.environ.get("TWILIO_AUTH")
+FROM_PHONE = os.environ.get("TWILIO_FROM")
+TO_PHONE = os.environ.get("TO_PHONE")
 
 client = Client(account_sid, auth_token)
 
@@ -57,9 +52,9 @@ def submit():
                 if not line:
                     continue
                 item_name, qty = line.split(':')
-                code = item_name.strip().upper().split()[0]  # Assume code is the first word
+                code = item_name.strip().upper().split()[0]
                 qty = int(qty.strip().split()[0])
-                full_name, price = PICKLE_INFO.get(code, ('', 100))
+                full_name, price = PICKLE_INFO.get(code, ('Unknown', 100))
                 cost = price * qty
                 total_cost += cost
                 pickle_lines.append(f"{full_name} ({code}) x {qty} = ₹{cost}")
@@ -80,12 +75,14 @@ def submit():
     ])
 
     try:
-        # message = client.messages.create(
-        #     body=sms_message,
-        #     from_=FROM_PHONE,
-        #     to=TO_PHONE
-        # )
+        # Send SMS
+        client.messages.create(
+            body=sms_message,
+            from_=FROM_PHONE,
+            to=TO_PHONE
+        )
 
+        # Save to DB
         order_data = {
             "name": name,
             "phone": phone,
@@ -95,12 +92,10 @@ def submit():
             "pickles": pickle_lines,
             "total_cost": total_cost
         }
-        order_id = mongo.db.fish.insert_one(order_data).inserted_id
-        print(f"✅ Order saved with ID: {order_id}")
+        mongo.db.fish.insert_one(order_data)
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
     except Exception as e:
-        print("❌ Failed:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
