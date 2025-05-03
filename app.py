@@ -1,25 +1,24 @@
-import os
 from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
-from urllib.parse import quote_plus
+import os
 
 app = Flask(__name__)
 
-# MongoDB Configuration (use environment variables)
-username = os.environ.get("MONGO_USERNAME")
-password = os.environ.get("MONGO_PASSWORD")
-encoded_username = quote_plus(username)
-encoded_password = quote_plus(password)
+# MongoDB Configuration using environment variables
+mongo_username = os.getenv("MONGO_USERNAME")
+mongo_password = os.getenv("MONGO_PASSWORD")
+encoded_username = quote_plus(mongo_username)
+encoded_password = quote_plus(mongo_password)
 
 app.config["MONGO_URI"] = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.6wjy4p3.mongodb.net/nikhil?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
-# Twilio Configuration (use environment variables)
-account_sid = os.environ.get("TWILIO_SID")
-auth_token = os.environ.get("TWILIO_AUTH")
-FROM_PHONE = os.environ.get("TWILIO_FROM")
-TO_PHONE = os.environ.get("TWILIO_TO")
+# Twilio Configuration using environment variables
+account_sid = os.getenv("TWILIO_SID")
+auth_token = os.getenv("TWILIO_AUTH")
+FROM_PHONE = os.getenv("TWILIO_FROM")
+TO_PHONE = os.getenv("TWILIO_TO")
 
 client = Client(account_sid, auth_token)
 
@@ -81,7 +80,7 @@ def submit():
     ])
 
     try:
-        # Sending SMS using Twilio (uncomment this when you're ready to send SMS)
+        # Send SMS (optional, can be commented out if not needed)
         # message = client.messages.create(
         #     body=sms_message,
         #     from_=FROM_PHONE,
