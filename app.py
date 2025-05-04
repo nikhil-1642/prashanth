@@ -68,9 +68,6 @@ def submit():
         f"📍 Address: {address}",
         f"📮 Pincode: {pincode}",
         "",
-        "🧴 Items Ordered:"
-    ] + pickle_lines + [
-        "",
         f"💰 Total: ₹{total_cost}"
     ])
 
