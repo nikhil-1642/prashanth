@@ -1,5 +1,5 @@
-Flask
-gunicorn
-twilio
-flask-pymongo
-dnspython
+Flask==2.3.2
+gunicorn==21.2.0
+twilio==9.0.3
+Flask-PyMongo==2.3.0
+dnspython==2.3.0
