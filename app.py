@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
+from urllib.parse import quote_plus  # ✅ Fixed import
 import os
 
 app = Flask(__name__)
@@ -59,7 +60,7 @@ def submit():
                 item_name, qty = line.split(':')
                 code = item_name.strip().upper().split()[0]  # Assume code is the first word
                 qty = int(qty.strip().split()[0])
-                full_name, price = PICKLE_INFO.get(code, ('', 100))
+                full_name, price = PICKLE_INFO.get(code, ('Unknown', 100))
                 cost = price * qty
                 total_cost += cost
                 pickle_lines.append(f"{full_name} ({code}) x {qty} = ₹{cost}")
@@ -80,7 +81,7 @@ def submit():
     ])
 
     try:
-        # Send SMS (optional, can be commented out if not needed)
+        # Uncomment to send SMS via Twilio
         # message = client.messages.create(
         #     body=sms_message,
         #     from_=FROM_PHONE,
