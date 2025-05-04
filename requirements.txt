@@ -2,3 +2,4 @@ Flask
 gunicorn
 twilio
 flask-pymongo
+dnspython
