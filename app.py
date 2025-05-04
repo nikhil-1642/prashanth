@@ -61,13 +61,19 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    sms_message ="hello"
+    # ✅ Compose a proper SMS message
+    sms_message = f"New order from {name}, ₹{total_cost}:\n" + "\n".join(pickle_lines)
 
     try:
-        # Optional: Send SMS
-        client.messages.create(body="hhh", from_=FROM_PHONE, to=TO_PHONE)
+        # ✅ Send SMS via Twilio
+        message = client.messages.create(
+            body=sms_message,
+            from_=FROM_PHONE,
+            to=TO_PHONE
+        )
+        print(f"✅ SMS sent with SID: {message.sid}")
 
-        # Save order to MongoDB
+        # ✅ Save order to MongoDB
         order_data = {
             "name": name,
             "phone": phone,
@@ -81,8 +87,9 @@ def submit():
         print(f"✅ Order saved with ID: {order_id}")
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
+    
     except Exception as e:
-        print("❌ Failed:", e)
+        print("❌ Failed to send SMS or save order:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
