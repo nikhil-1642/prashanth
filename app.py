@@ -1,28 +1,22 @@
 from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
-from urllib.parse import quote_plus  # ✅ Correct import
 import os
 
 app = Flask(__name__)
 
-# MongoDB Configuration
-mongo_username = os.getenv("MONGO_USERNAME")
-mongo_password = os.getenv("MONGO_PASSWORD")
-encoded_username = quote_plus(mongo_username or "")
-encoded_password = quote_plus(mongo_password or "")
-
-app.config["MONGO_URI"] = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.6wjy4p3.mongodb.net/nikhil?retryWrites=true&w=majority"
+# ✅ Use full MongoDB URI from environment variable
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# Twilio Configuration
+# ✅ Twilio setup using env vars
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
 FROM_PHONE = os.getenv("TWILIO_FROM")
 TO_PHONE = os.getenv("TWILIO_TO")
-
 client = Client(account_sid, auth_token)
 
+# ✅ Pickle price list
 PICKLE_INFO = {
     'KF': ('King Fish', 120),
     'KFP': ('King Fish Pulusu', 110),
@@ -81,9 +75,10 @@ def submit():
     ])
 
     try:
-        # Uncomment if SMS sending is needed
+        # Optional: Send SMS
         # client.messages.create(body=sms_message, from_=FROM_PHONE, to=TO_PHONE)
 
+        # Save order to MongoDB
         order_data = {
             "name": name,
             "phone": phone,
