@@ -61,11 +61,7 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    sms_message = "\n".join([
-        f"🥒 Pickle Order from {name}",
-        f"📞 {phone}",
-        f"💰 Total: ₹{total_cost}"
-    ])
+    sms_message ="hello"
 
     try:
         # Optional: Send SMS
