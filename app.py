@@ -61,11 +61,19 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Compose a proper SMS message
-    sms_message = f"New order from {name}, ₹{total_cost}:\n" + "\n".join(pickle_lines)
+    # ✅ Compose a shortened SMS message with a max of 3 items
+    max_items = 3  # Limit number of items in SMS
+    pickle_summary = "\n".join(pickle_lines[:max_items])
 
+    # Add "+ More items..." if there are more than `max_items`
+    if len(pickle_lines) > max_items:
+        pickle_summary += "\n+ More items..."
+
+    # Construct the SMS message
+    sms_message = f"Order from {name}: ₹{total_cost} | {pickle_summary}"
+
+    # ✅ Send SMS via Twilio
     try:
-        # ✅ Send SMS via Twilio
         message = client.messages.create(
             body=sms_message,
             from_=FROM_PHONE,
