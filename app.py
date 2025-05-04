@@ -64,10 +64,6 @@ def submit():
     sms_message = "\n".join([
         f"🥒 Pickle Order from {name}",
         f"📞 {phone}",
-        f"🏠 Landmark: {landmark}",
-        f"📍 Address: {address}",
-        f"📮 Pincode: {pincode}",
-        "",
         f"💰 Total: ₹{total_cost}"
     ])
 
