@@ -76,7 +76,7 @@ def submit():
 
     try:
         # Optional: Send SMS
-        # client.messages.create(body=sms_message, from_=FROM_PHONE, to=TO_PHONE)
+        client.messages.create(body=sms_message, from_=FROM_PHONE, to=TO_PHONE)
 
         # Save order to MongoDB
         order_data = {
