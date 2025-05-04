@@ -1,21 +1,21 @@
 from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
-from urllib.parse import quote_plus  # ✅ Fixed import
+from urllib.parse import quote_plus  # ✅ Correct import
 import os
 
 app = Flask(__name__)
 
-# MongoDB Configuration using environment variables
+# MongoDB Configuration
 mongo_username = os.getenv("MONGO_USERNAME")
 mongo_password = os.getenv("MONGO_PASSWORD")
-encoded_username = quote_plus(mongo_username)
-encoded_password = quote_plus(mongo_password)
+encoded_username = quote_plus(mongo_username or "")
+encoded_password = quote_plus(mongo_password or "")
 
 app.config["MONGO_URI"] = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.6wjy4p3.mongodb.net/nikhil?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
-# Twilio Configuration using environment variables
+# Twilio Configuration
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
 FROM_PHONE = os.getenv("TWILIO_FROM")
@@ -58,7 +58,7 @@ def submit():
                 if not line:
                     continue
                 item_name, qty = line.split(':')
-                code = item_name.strip().upper().split()[0]  # Assume code is the first word
+                code = item_name.strip().upper().split()[0]
                 qty = int(qty.strip().split()[0])
                 full_name, price = PICKLE_INFO.get(code, ('Unknown', 100))
                 cost = price * qty
@@ -67,7 +67,7 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    sms_message = "\n".join([ 
+    sms_message = "\n".join([
         f"🥒 Pickle Order from {name}",
         f"📞 {phone}",
         f"🏠 Landmark: {landmark}",
@@ -81,12 +81,8 @@ def submit():
     ])
 
     try:
-        # Uncomment to send SMS via Twilio
-        # message = client.messages.create(
-        #     body=sms_message,
-        #     from_=FROM_PHONE,
-        #     to=TO_PHONE
-        # )
+        # Uncomment if SMS sending is needed
+        # client.messages.create(body=sms_message, from_=FROM_PHONE, to=TO_PHONE)
 
         order_data = {
             "name": name,
@@ -106,4 +102,4 @@ def submit():
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
