@@ -68,8 +68,8 @@ def submit():
         # ✅ Send SMS via Twilio
         message = client.messages.create(
             body=sms_message,
-            from_='whatsapp'+FROM_PHONE,
-            to='whatsapp:'+TO_PHONE
+            from_=FROM_PHONE,
+            to=TO_PHONE
         )
         print(f"✅ SMS sent with SID: {message.sid}")
 
