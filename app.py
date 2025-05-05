@@ -12,8 +12,8 @@ mongo = PyMongo(app)
 # ✅ Twilio setup using env vars
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-FROM_PHONE = os.getenv("TWILIO_FROM")  # e.g., +14155238886 (Twilio sandbox)
-TO_PHONE = os.getenv("TWILIO_TO")      # e.g., +91XXXXXXXXXX (your WhatsApp number)
+FROM_PHONE = os.getenv("TWILIO_FROM")
+TO_PHONE = os.getenv("TWILIO_TO")
 client = Client(account_sid, auth_token)
 
 # ✅ Pickle price list
@@ -61,32 +61,19 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Compose a shortened message (limit to 3 items for SMS/WhatsApp)
-    max_items = 3
-    pickle_summary = "\n".join(pickle_lines[:max_items])
-    if len(pickle_lines) > max_items:
-        pickle_summary += "\n+ More items..."
-
-    sms_message = f"Order from {name}: ₹{total_cost} | {pickle_summary}"
+    # ✅ Compose a proper SMS message
+    sms_message = f"New order from {name}, ₹{total_cost}:\n" + "\n".join(pickle_lines)
 
     try:
-        # ✅ Send SMS
-        # sms = client.messages.create(
-        #     body=sms_message,
-        #     from_=FROM_PHONE,
-        #     to=TO_PHONE
-        # )
-        # print(f"✅ SMS sent with SID: {sms.sid}")
-
-        # ✅ Send WhatsApp
-        whatsapp = client.messages.create(
+        # ✅ Send SMS via Twilio
+        message = client.messages.create(
             body=sms_message,
-            from_='whatsapp:' + FROM_PHONE,
-            to='whatsapp:' + TO_PHONE
+            from_='whatsapp'+FROM_PHONE,
+            to='whatsapp:'+TO_PHONE
         )
-        print(f"✅ WhatsApp message sent with SID: {whatsapp.sid}")
+        print(f"✅ SMS sent with SID: {message.sid}")
 
-        # ✅ Save to MongoDB
+        # ✅ Save order to MongoDB
         order_data = {
             "name": name,
             "phone": phone,
@@ -100,9 +87,9 @@ def submit():
         print(f"✅ Order saved with ID: {order_id}")
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
-
+    
     except Exception as e:
-        print("❌ Failed to send message or save order:", e)
+        print("❌ Failed to send SMS or save order:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
