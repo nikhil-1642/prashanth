@@ -2,18 +2,22 @@ from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
 import os
+from dotenv import load_dotenv
+
+# ✅ Load environment variables from .env file (for local development)
+load_dotenv()
 
 app = Flask(__name__)
 
-# ✅ Use full MongoDB URI from environment variable
+# ✅ MongoDB config
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# ✅ Twilio setup using env vars
+# ✅ Twilio WhatsApp setup using environment variables
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-FROM_PHONE = os.getenv("TWILIO_FROM")
-TO_PHONE = os.getenv("TWILIO_TO")
+WHATSAPP_FROM = f"whatsapp:{os.getenv('WHATSAPP_FROM')}"  # e.g., +14155238886
+WHATSAPP_TO = f"whatsapp:{os.getenv('WHATSAPP_TO')}"      # e.g., +91XXXXXXXXXX
 client = Client(account_sid, auth_token)
 
 # ✅ Pickle price list
@@ -61,17 +65,17 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Compose a proper SMS message
-    sms_message = f"New order from {name}, ₹{total_cost}:\n" + "\n".join(pickle_lines)
+    # ✅ Compose WhatsApp message
+    whatsapp_message = f"New order from {name}, ₹{total_cost}:\n" + "\n".join(pickle_lines)
 
     try:
-        # ✅ Send SMS via Twilio
+        # ✅ Send WhatsApp message via Twilio
         message = client.messages.create(
-            body=sms_message,
-            from_=FROM_PHONE,
-            to=TO_PHONE
+            body=whatsapp_message,
+            from_=WHATSAPP_FROM,
+            to=WHATSAPP_TO
         )
-        print(f"✅ SMS sent with SID: {message.sid}")
+        print(f"✅ WhatsApp message sent with SID: {message.sid}")
 
         # ✅ Save order to MongoDB
         order_data = {
@@ -89,7 +93,7 @@ def submit():
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
     
     except Exception as e:
-        print("❌ Failed to send SMS or save order:", e)
+        print("❌ Failed to send WhatsApp or save order:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
