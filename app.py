@@ -3,6 +3,7 @@ from twilio.rest import Client
 from flask_pymongo import PyMongo
 import os
 import json
+
 app = Flask(__name__)
 
 # ✅ Use full MongoDB URI from environment variable
@@ -14,8 +15,8 @@ account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
 FROM_PHONE = os.getenv("TWILIO_FROM")  # e.g., +14155238886 (Twilio sandbox)
 TO_PHONE = os.getenv("TWILIO_TO")
-whatsapp_from = os.getenv('TWILIO_WHATSAPP_FROM')
-whatsapp_to = os.getenv('WHATSAPP_TO')  # e.g., +91XXXXXXXXXX (your WhatsApp number)
+whatsapp_from = os.getenv('TWILIO_WHATSAPP_FROM')  # Correct format, fetched from env
+whatsapp_to = os.getenv('WHATSAPP_TO')  # Correct format, fetched from env
 client = Client(account_sid, auth_token)
 
 # ✅ Pickle price list
@@ -74,17 +75,8 @@ def submit():
     sms_message = f"Order from {name}: ₹{total_cost} | {pickle_summary}"
 
     try:
-        # ✅ Send SMS
-        # sms = client.messages.create(
-        #     body=sms_message,
-        #     from_=FROM_PHONE,
-        #     to=TO_PHONE
-        # )
-        # print(f"✅ SMS sent with SID: {sms.sid}")
-
         # ✅ Send WhatsApp message
-
-        # ✅ Save to MongoDB
+        # Create a string of order data to send
         order_data = {
             "name": name,
             "phone": phone,
@@ -94,15 +86,19 @@ def submit():
             "pickles": pickle_lines,
             "total_cost": total_cost
         }
-        order_id = mongo.db.fish.insert_one(order_data).inserted_id
-        print(f"✅ Order saved with ID: {order_id}")
         order_data_str = json.dumps(order_data)
+
+        # Send message to WhatsApp using the Twilio client
         message = client.messages.create(
             body=order_data_str,
             from_=whatsapp_from,
             to=whatsapp_to
         )
         print('✅ Message sent! SID:', message.sid)
+
+        # ✅ Save to MongoDB
+        order_id = mongo.db.fish.insert_one(order_data).inserted_id
+        print(f"✅ Order saved with ID: {order_id}")
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
