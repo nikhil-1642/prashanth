@@ -5,21 +5,18 @@ import os
 
 app = Flask(__name__)
 
-# ✅ MongoDB setup
+# MongoDB setup
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# ✅ Twilio config
+# Twilio config
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-sms_from = os.getenv("TWILIO_FROM")
-sms_to = os.getenv("TWILIO_TO")
 whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")
 whatsapp_to = os.getenv("WHATSAPP_TO")
-
 client = Client(account_sid, auth_token)
 
-# ✅ Pickle prices and names
+# Pickle price data
 PICKLE_INFO = {
     'KF': ('King Fish', 120),
     'KFP': ('King Fish Pulusu', 110),
@@ -65,7 +62,7 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Format order message
+    # Send WhatsApp message
     order_message = (
         f"New Order Received!\n"
         f"Name: {name}\n"
@@ -78,24 +75,16 @@ def submit():
     )
 
     try:
-        # ✅ Send WhatsApp message
-        wa_msg = client.messages.create(
+        # Send WhatsApp
+        message = client.messages.create(
             body=order_message,
             from_=whatsapp_from,
             to=whatsapp_to
         )
-        print('✅ WhatsApp message sent! SID:', wa_msg.sid)
+        print('✅ WhatsApp message sent! SID:', message.sid)
 
-        # ✅ Send SMS message
-        sms_msg = client.messages.create(
-            body=order_message,
-            from_=sms_from,
-            to=sms_to
-        )
-        print('✅ SMS message sent! SID:', sms_msg.sid)
-
-        # ✅ Save to MongoDB
-        order_data = {
+        # Save to MongoDB
+        mongo.db.fish.insert_one({
             "name": name,
             "phone": phone,
             "landmark": landmark,
@@ -103,14 +92,12 @@ def submit():
             "pincode": pincode,
             "pickles": pickle_lines,
             "total_cost": total_cost
-        }
-        order_id = mongo.db.fish.insert_one(order_data).inserted_id
-        print(f"✅ Order saved with ID: {str(order_id)}")
+        })
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
     except Exception as e:
-        print("❌ Failed to send message or save order:", e)
+        print("❌ Order failed:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
