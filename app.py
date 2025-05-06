@@ -78,13 +78,7 @@ def submit():
         )
         print(f"✅ SMS sent with SID: {sms.sid}")
 
-        # ✅ Send WhatsApp
-        whatsapp = client.messages.create(
-            body=sms_message,
-            from_='whatsapp:' + FROM_PHONE,
-            to='whatsapp:' + TO_PHONE
-        )
-        print(f"✅ WhatsApp message sent with SID: {whatsapp.sid}")
+        
 
         # ✅ Save to MongoDB
         order_data = {
