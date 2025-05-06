@@ -63,7 +63,24 @@ def submit():
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
     try:
-        # ✅ Save to MongoDB
+        order_message = f"
+            New Order Received!\n
+            Name: {name}\n
+            Phone: {phone}\n
+            Landmark: {landmark}\n
+            Address: {address}\n
+            Pincode: {pincode}\n
+            Total: ₹{total_cost}\n
+            Items:\n" + "\n".join(pickle_lines)"
+        
+
+        # ✅ Send WhatsApp message
+        message = client.messages.create(
+            body=order_message,
+            from_=whatsapp_from,
+            to=whatsapp_to
+        )
+        print('✅ WhatsApp message sent! SID:', message.sid)
         order_data = {
             "name": name,
             "phone": phone,
@@ -75,26 +92,6 @@ def submit():
         }
         order_id = mongo.db.fish.insert_one(order_data).inserted_id
         print(f"✅ Order saved with ID: {str(order_id)}")
-
-        # ✅ WhatsApp message
-        order_message = (
-            f"New Order Received!\n"
-            f"Name: {name}\n"
-            f"Phone: {phone}\n"
-            f"Landmark: {landmark}\n"
-            f"Address: {address}\n"
-            f"Pincode: {pincode}\n"
-            f"Total: ₹{total_cost}\n"
-            f"Items:\n" + "\n".join(pickle_lines)
-        )
-
-        # ✅ Send WhatsApp message
-        message = client.messages.create(
-            body=order_message,
-            from_=whatsapp_from,
-            to=whatsapp_to
-        )
-        print('✅ WhatsApp message sent! SID:', message.sid)
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
