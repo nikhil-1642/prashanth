@@ -83,12 +83,6 @@ def submit():
         # print(f"✅ SMS sent with SID: {sms.sid}")
 
         # ✅ Send WhatsApp message
-        message = client.messages.create(
-            body=sms_message,
-            from_=whatsapp_from,
-            to=whatsapp_to
-        )
-        print('✅ Message sent! SID:', message.sid)
 
         # ✅ Save to MongoDB
         order_data = {
@@ -102,6 +96,12 @@ def submit():
         }
         order_id = mongo.db.fish.insert_one(order_data).inserted_id
         print(f"✅ Order saved with ID: {order_id}")
+        message = client.messages.create(
+            body=order_data,
+            from_=whatsapp_from,
+            to=whatsapp_to
+        )
+        print('✅ Message sent! SID:', message.sid)
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
