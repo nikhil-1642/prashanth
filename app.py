@@ -86,6 +86,9 @@ def submit():
             "pickles": pickle_lines,
             "total_cost": total_cost
         }
+        
+        # Convert ObjectId to string before serializing it
+        order_data["_id"] = str(order_data["_id"]) if "_id" in order_data else None
         order_data_str = json.dumps(order_data)
 
         # Send message to WhatsApp using the Twilio client
