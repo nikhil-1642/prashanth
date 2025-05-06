@@ -12,8 +12,8 @@ mongo = PyMongo(app)
 # Twilio config
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")
-whatsapp_to = os.getenv("WHATSAPP_TO")
+whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")  # +14155238886 (Twilio WhatsApp number)
+whatsapp_to = os.getenv("WHATSAPP_TO")  # +919390286430 (Recipient WhatsApp number)
 client = Client(account_sid, auth_token)
 
 # Pickle price data
@@ -60,7 +60,7 @@ def submit():
                 total_cost += cost
                 pickle_lines.append(f"{full_name} ({code}) x {qty} = ₹{cost}")
             except Exception as e:
-                print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
+                pickle_lines.append(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
     # Send WhatsApp message
     order_message = (
@@ -77,8 +77,8 @@ def submit():
     try:
         message = client.messages.create(
             body=order_message,
-            from_=whatsapp_from,
-            to=f"whatsapp:{whatsapp_to}"  # Use the phone number input by the user
+            from_=whatsapp_from,  # Twilio WhatsApp number
+            to=f'whatsapp:{whatsapp_to}'  # Recipient WhatsApp number
         )
         print('✅ WhatsApp message sent! SID:', message.sid)
 
