@@ -70,8 +70,8 @@ def submit():
             Landmark: {landmark}\n
             Address: {address}\n
             Pincode: {pincode}\n
-            Total: ₹{total_cost}\n
-            Items:\n" + "\n".join(pickle_lines)"
+            Total: ₹{total_cost}\n"+
+           f" Items:\n" + "\n".join(pickle_lines)"
         
 
         # ✅ Send WhatsApp message
