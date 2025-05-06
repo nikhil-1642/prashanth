@@ -84,7 +84,7 @@ def submit():
 
         # ✅ Send WhatsApp message
         message = client.messages.create(
-            body="Order placed!",
+            body=sms_message,
             from_=whatsapp_from,
             to=whatsapp_to
         )
