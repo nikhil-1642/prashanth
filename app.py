@@ -2,21 +2,20 @@ from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
 import os
-import json
 
 app = Flask(__name__)
 
-# ✅ Use full MongoDB URI from environment variable
+# ✅ Load config from environment variables
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# ✅ Twilio setup using env vars
+# ✅ Twilio setup
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-FROM_PHONE = os.getenv("TWILIO_FROM")  # e.g., +14155238886 (Twilio sandbox)
+FROM_PHONE = os.getenv("TWILIO_FROM")
 TO_PHONE = os.getenv("TWILIO_TO")
-whatsapp_from = os.getenv('TWILIO_WHATSAPP_FROM')  # Correct format, fetched from env
-whatsapp_to = os.getenv('WHATSAPP_TO')  # Correct format, fetched from env
+whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")
+whatsapp_to = os.getenv("WHATSAPP_TO")
 client = Client(account_sid, auth_token)
 
 # ✅ Pickle price list
@@ -45,11 +44,10 @@ def submit():
     address = request.form.get('address')
     pincode = request.form.get('pincode')
     pickles_input = request.form.get('pickles')
-    
+
     total_cost = 0
     pickle_lines = []
 
-    # ✅ Parse pickle input
     if pickles_input:
         for line in pickles_input.strip().split('\n'):
             try:
@@ -66,47 +64,44 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Compose a shortened message (limit to 3 items)
-    max_items = 3
-    pickle_summary = "\n".join(pickle_lines[:max_items])
-    if len(pickle_lines) > max_items:
-        pickle_summary += "\n+ More items..."
+    # ✅ Store in MongoDB
+    order_data = {
+        "name": name,
+        "phone": phone,
+        "landmark": landmark,
+        "address": address,
+        "pincode": pincode,
+        "pickles": pickle_lines,
+        "total_cost": total_cost
+    }
+    order_id = mongo.db.fish.insert_one(order_data).inserted_id
+    print(f"✅ Order saved with ID: {order_id}")
 
-    sms_message = f"Order from {name}: ₹{total_cost} | {pickle_summary}"
+    # ✅ Build WhatsApp message string
+    order_message = (
+        f"New Order Received!\n"
+        f"Name: {name}\n"
+        f"Phone: {phone}\n"
+        f"Landmark: {landmark}\n"
+        f"Address: {address}\n"
+        f"Pincode: {pincode}\n"
+        f"Total: ₹{total_cost}\n"
+        f"Items:\n" + "\n".join(pickle_lines)
+    )
 
     try:
         # ✅ Send WhatsApp message
-        # Create a string of order data to send
-        order_data = {
-            "name": name,
-            "phone": phone,
-            "landmark": landmark,
-            "address": address,
-            "pincode": pincode,
-            "pickles": pickle_lines,
-            "total_cost": total_cost
-        }
-        
-        # Convert ObjectId to string before serializing it
-        order_data["_id"] = str(order_data["_id"]) if "_id" in order_data else None
-        order_data_str = json.dumps(order_data)
-
-        # Send message to WhatsApp using the Twilio client
         message = client.messages.create(
-            body=order_data_str,
+            body=order_message,
             from_=whatsapp_from,
             to=whatsapp_to
         )
-        print('✅ Message sent! SID:', message.sid)
-
-        # ✅ Save to MongoDB
-        order_id = mongo.db.fish.insert_one(order_data).inserted_id
-        print(f"✅ Order saved with ID: {order_id}")
+        print('✅ WhatsApp message sent! SID:', message.sid)
 
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
     except Exception as e:
-        print("❌ Failed to send message or save order:", e)
+        print("❌ Failed to send message:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
