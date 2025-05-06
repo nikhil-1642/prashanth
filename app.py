@@ -75,12 +75,12 @@ def submit():
 
     try:
         # ✅ Send SMS
-        sms = client.messages.create(
-            body=sms_message,
-            from_=FROM_PHONE,
-            to=TO_PHONE
-        )
-        print(f"✅ SMS sent with SID: {sms.sid}")
+        # sms = client.messages.create(
+        #     body=sms_message,
+        #     from_=FROM_PHONE,
+        #     to=TO_PHONE
+        # )
+        # print(f"✅ SMS sent with SID: {sms.sid}")
 
         # ✅ Send WhatsApp message
         message = client.messages.create(
