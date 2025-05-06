@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 from twilio.rest import Client
 from flask_pymongo import PyMongo
 import os
-
+import json
 app = Flask(__name__)
 
 # ✅ Use full MongoDB URI from environment variable
@@ -96,8 +96,9 @@ def submit():
         }
         order_id = mongo.db.fish.insert_one(order_data).inserted_id
         print(f"✅ Order saved with ID: {order_id}")
+        order_data_str = json.dumps(order_data)
         message = client.messages.create(
-            body=order_data,
+            body=order_data_str,
             from_=whatsapp_from,
             to=whatsapp_to
         )
