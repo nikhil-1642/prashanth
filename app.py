@@ -5,20 +5,18 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Load config from environment variables
+# ✅ Environment-based configuration
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# ✅ Twilio setup
+# ✅ Twilio config
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-FROM_PHONE = os.getenv("TWILIO_FROM")
-TO_PHONE = os.getenv("TWILIO_TO")
 whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")
 whatsapp_to = os.getenv("WHATSAPP_TO")
 client = Client(account_sid, auth_token)
 
-# ✅ Pickle price list
+# ✅ Pickle prices
 PICKLE_INFO = {
     'KF': ('King Fish', 120),
     'KFP': ('King Fish Pulusu', 110),
@@ -64,32 +62,32 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Store in MongoDB
-    order_data = {
-        "name": name,
-        "phone": phone,
-        "landmark": landmark,
-        "address": address,
-        "pincode": pincode,
-        "pickles": pickle_lines,
-        "total_cost": total_cost
-    }
-    order_id = mongo.db.fish.insert_one(order_data).inserted_id
-    print(f"✅ Order saved with ID: {order_id}")
-
-    # ✅ Build WhatsApp message string
-    order_message = (
-        f"New Order Received!\n"
-        f"Name: {name}\n"
-        f"Phone: {phone}\n"
-        f"Landmark: {landmark}\n"
-        f"Address: {address}\n"
-        f"Pincode: {pincode}\n"
-        f"Total: ₹{total_cost}\n"
-        f"Items:\n" + "\n".join(pickle_lines)
-    )
-
     try:
+        # ✅ Save to MongoDB
+        order_data = {
+            "name": name,
+            "phone": phone,
+            "landmark": landmark,
+            "address": address,
+            "pincode": pincode,
+            "pickles": pickle_lines,
+            "total_cost": total_cost
+        }
+        order_id = mongo.db.fish.insert_one(order_data).inserted_id
+        print(f"✅ Order saved with ID: {str(order_id)}")
+
+        # ✅ WhatsApp message
+        order_message = (
+            f"New Order Received!\n"
+            f"Name: {name}\n"
+            f"Phone: {phone}\n"
+            f"Landmark: {landmark}\n"
+            f"Address: {address}\n"
+            f"Pincode: {pincode}\n"
+            f"Total: ₹{total_cost}\n"
+            f"Items:\n" + "\n".join(pickle_lines)
+        )
+
         # ✅ Send WhatsApp message
         message = client.messages.create(
             body=order_message,
@@ -101,7 +99,7 @@ def submit():
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
     except Exception as e:
-        print("❌ Failed to send message:", e)
+        print("❌ Failed to send message or save order:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
