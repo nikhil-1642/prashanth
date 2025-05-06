@@ -75,11 +75,10 @@ def submit():
     )
 
     try:
-        # Send WhatsApp
         message = client.messages.create(
             body=order_message,
             from_=whatsapp_from,
-            to=whatsapp_to
+            to=f"whatsapp:{whatsapp_to}"  # Use the phone number input by the user
         )
         print('✅ WhatsApp message sent! SID:', message.sid)
 
