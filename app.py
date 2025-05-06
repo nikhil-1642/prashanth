@@ -5,15 +5,16 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Use full MongoDB URI from environment variable
+# ✅ MongoDB setup
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# ✅ Twilio setup using env vars
+# ✅ Twilio setup
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-FROM_PHONE = os.getenv("TWILIO_FROM")  # e.g., +14155238886 (Twilio sandbox)
-TO_PHONE = os.getenv("TWILIO_TO")      # e.g., +91XXXXXXXXXX (your WhatsApp number)
+FROM_PHONE = os.getenv("TWILIO_FROM")  # e.g., +1415XXXXXXX (Twilio SMS number)
+TO_PHONE = os.getenv("TWILIO_TO")      # e.g., +91XXXXXXXXXX (your personal number)
+
 client = Client(account_sid, auth_token)
 
 # ✅ Pickle price list
@@ -61,13 +62,13 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # ✅ Compose a shortened message (limit to 3 items for SMS/WhatsApp)
+    # ✅ Compose SMS message
     max_items = 3
     pickle_summary = "\n".join(pickle_lines[:max_items])
     if len(pickle_lines) > max_items:
         pickle_summary += "\n+ More items..."
 
-    sms_message = f"Order from {name}: ₹{total_cost} | {pickle_summary}"
+    sms_message = f"Order from {name}: ₹{total_cost}\n{pickle_summary}"
 
     try:
         # ✅ Send SMS
@@ -77,8 +78,6 @@ def submit():
             to=TO_PHONE
         )
         print(f"✅ SMS sent with SID: {sms.sid}")
-
-        
 
         # ✅ Save to MongoDB
         order_data = {
