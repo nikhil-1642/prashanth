@@ -5,18 +5,21 @@ import os
 
 app = Flask(__name__)
 
-# ✅ Environment-based configuration
+# ✅ MongoDB setup
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
 # ✅ Twilio config
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
+sms_from = os.getenv("TWILIO_FROM")
+sms_to = os.getenv("TWILIO_TO")
 whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")
 whatsapp_to = os.getenv("WHATSAPP_TO")
+
 client = Client(account_sid, auth_token)
 
-# ✅ Pickle prices
+# ✅ Pickle prices and names
 PICKLE_INFO = {
     'KF': ('King Fish', 120),
     'KFP': ('King Fish Pulusu', 110),
@@ -62,25 +65,36 @@ def submit():
             except Exception as e:
                 print(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    try:
-        order_message = f"
-            New Order Received!\n
-            Name: {name}\n
-            Phone: {phone}\n
-            Landmark: {landmark}\n
-            Address: {address}\n
-            Pincode: {pincode}\n
-            Total: ₹{total_cost}\n"+
-           f" Items:\n" + "\n".join(pickle_lines)"
-        
+    # ✅ Format order message
+    order_message = (
+        f"New Order Received!\n"
+        f"Name: {name}\n"
+        f"Phone: {phone}\n"
+        f"Landmark: {landmark}\n"
+        f"Address: {address}\n"
+        f"Pincode: {pincode}\n"
+        f"Total: ₹{total_cost}\n"
+        f"Items:\n" + "\n".join(pickle_lines)
+    )
 
+    try:
         # ✅ Send WhatsApp message
-        message = client.messages.create(
+        wa_msg = client.messages.create(
             body=order_message,
             from_=whatsapp_from,
             to=whatsapp_to
         )
-        print('✅ WhatsApp message sent! SID:', message.sid)
+        print('✅ WhatsApp message sent! SID:', wa_msg.sid)
+
+        # ✅ Send SMS message
+        sms_msg = client.messages.create(
+            body=order_message,
+            from_=sms_from,
+            to=sms_to
+        )
+        print('✅ SMS message sent! SID:', sms_msg.sid)
+
+        # ✅ Save to MongoDB
         order_data = {
             "name": name,
             "phone": phone,
