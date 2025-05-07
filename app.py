@@ -9,14 +9,14 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 
-# Twilio config
+# Twilio setup
 account_sid = os.getenv("TWILIO_SID")
 auth_token = os.getenv("TWILIO_AUTH")
-whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")  # +14155238886 (Twilio WhatsApp number)
-whatsapp_to = os.getenv("WHATSAPP_TO")  # +919390286430 (Recipient WhatsApp number)
+whatsapp_from = os.getenv("TWILIO_WHATSAPP_FROM")  # +14155238886
+whatsapp_to = os.getenv("WHATSAPP_TO")             # e.g., +919390286430
 client = Client(account_sid, auth_token)
 
-# Pickle price data
+# Pickle info with short codes
 PICKLE_INFO = {
     'RFP': ('Rohu Fish Pickle', 900),
     'PR': ('Prawns Pickles', 1200),
@@ -27,6 +27,10 @@ PICKLE_INFO = {
     'KFP': ('Katla Fish Pickle', 900),
     'TFP': ('Tilapia Fish Pickle', 800)
 }
+
+# Reverse map: full name => code
+FULLNAME_TO_CODE = {v[0].lower(): k for k, v in PICKLE_INFO.items()}
+
 @app.route('/')
 def home():
     return render_template('english.html')
@@ -49,37 +53,44 @@ def submit():
                 line = line.replace('•', '').strip()
                 if not line:
                     continue
-                item_name, qty = line.split(':')
-                code = item_name.strip().upper().split()[0]
-                qty = int(qty.strip().split()[0])
-                full_name, price = PICKLE_INFO.get(code, ('Unknown', 100))
+
+                item_name, qty_str = line.split(':')
+                item_name = item_name.strip().lower()
+                qty = int(qty_str.strip().split()[0])
+
+                code = FULLNAME_TO_CODE.get(item_name)
+                if not code:
+                    raise ValueError(f"Unrecognized pickle: {item_name}")
+
+                full_name, price = PICKLE_INFO[code]
                 cost = price * qty
                 total_cost += cost
                 pickle_lines.append(f"{full_name} ({code}) x {qty} = ₹{cost}")
+
             except Exception as e:
                 pickle_lines.append(f"⚠️ Failed to parse line: '{line}' | Error: {e}")
 
-    # Send WhatsApp message
     order_message = (
-        f"New Order Received!\n"
-        f"Name: {name}\n"
-        f"Phone: {phone}\n"
-        f"Landmark: {landmark}\n"
-        f"Address: {address}\n"
-        f"Pincode: {pincode}\n"
-        f"Total: ₹{total_cost}\n"
-        f"Items:\n" + "\n".join(pickle_lines)
+        f"🧂 *New Order Received!*\n"
+        f"👤 Name: {name}\n"
+        f"📞 Phone: {phone}\n"
+        f"📍 Landmark: {landmark}\n"
+        f"🏠 Address: {address}\n"
+        f"📮 Pincode: {pincode}\n"
+        f"💰 Total: ₹{total_cost}\n\n"
+        f"📝 Items:\n" + "\n".join(pickle_lines)
     )
 
     try:
+        # Send WhatsApp message
         message = client.messages.create(
             body=order_message,
-            from_=whatsapp_from,  # Twilio WhatsApp number
-            to=f'whatsapp:{whatsapp_to}'  # Recipient WhatsApp number
+            from_=whatsapp_from,
+            to=f'whatsapp:{whatsapp_to}'
         )
         print('✅ WhatsApp message sent! SID:', message.sid)
 
-        # Save to MongoDB
+        # Save order to MongoDB
         mongo.db.fish.insert_one({
             "name": name,
             "phone": phone,
@@ -93,7 +104,7 @@ def submit():
         return render_template('thank_you.html', name=name, pickle_lines=pickle_lines, total_cost=total_cost)
 
     except Exception as e:
-        print("❌ Order failed:", e)
+        print("❌ Order processing failed:", e)
         return f"<h2>Order Failed 😢</h2><p>Error: {e}</p>"
 
 if __name__ == '__main__':
