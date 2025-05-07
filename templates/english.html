@@ -135,19 +135,18 @@
 
     <label>Select Fish Pickles:</label>
     <div class="name-grid">
-      <!-- Repeat block for each pickle -->
       <div>
-        <p onclick="selectPickle(' Rohu fish pickle ')">
+        <p onclick="selectPickle('Rohu fish pickle')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqU8Yax2MEA37hSXARns0vRhsRonX_KBfGFA&s" />
-          Rohu fish pickle 
+          Rohu fish pickle
         </p>
         <input type="number" id="qty1" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost1">Cost: ₹0</p>
       </div>
       <div>
-        <p onclick="selectPickle(' Prawns pickles ')">
+        <p onclick="selectPickle('Prawns pickles')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCwIPpz9DThOVDxnM6ckaEU_hPrqvdwII7Cg&s" />
-          Prawns pickles 
+          Prawns pickles
         </p>
         <input type="number" id="qty2" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost2">Cost: ₹0</p>
@@ -155,7 +154,7 @@
       <div>
         <p onclick="selectPickle('murrel fish pickle')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpMhRa2a_fCAWIdij4JMbFHAXmUXf00kzbWQ&s" />
-         murrel fish pickle
+          murrel fish pickle
         </p>
         <input type="number" id="qty3" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost3">Cost: ₹0</p>
@@ -171,42 +170,40 @@
       <div>
         <p onclick="selectPickle('Chicken boneless pickle')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCoMLM8t-AJTJHdJjBp1QVtPbyBB0PAuo84Q&s" />
-         Chicken boneless pickle
+          Chicken boneless pickle
         </p>
         <input type="number" id="qty5" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost5">Cost: ₹0</p>
       </div>
       <div>
-        <p onclick="selectPickle('Mutton pickle ')">
+        <p onclick="selectPickle('Mutton pickle')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHX1N2XNek2wk7IecyPB-y0VSUURWLku8Ohw&s" />
-         Mutton pickle 
+          Mutton pickle
         </p>
         <input type="number" id="qty6" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost6">Cost: ₹0</p>
       </div>
       <div>
-        <p onclick="selectPickle('Katla fish pickle ')">
+        <p onclick="selectPickle('Katla fish pickle')">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdx3UeE4K-tVtUmulyt6Mh8pr0UjIXNTXMaA&s" />
-         Katla fish pickle 
+          Katla fish pickle
         </p>
         <input type="number" id="qty7" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost7">Cost: ₹0</p>
       </div>
       <div>
-        <p onclick="selectPickle('Tilapia fish pickle')">
+        <p onclick="selectPickle('Tilapia fish pickle')">
           <img src="https://m.media-amazon.com/images/I/71kcgj1qmVL._AC_UF1000,1000_QL80_.jpg" />
-        Tilapia fish pickle
+          Tilapia fish pickle
         </p>
         <input type="number" id="qty8" placeholder="Qty" min="1" oninput="updateCost()">
         <p class="cost" id="cost8">Cost: ₹0</p>
       </div>
     </div>
 
-    <!-- Display total -->
     <div class="total-cost">Total Cost: ₹<span id="totalCost">0</span></div>
     <ul class="order-list" id="selectedPicklesList"></ul>
 
-    <!-- Hidden fields for backend -->
     <input type="hidden" id="pickles" name="pickles">
     <input type="hidden" id="total" name="total">
 
@@ -215,40 +212,48 @@
 
   <script>
     const picklePrices = {
-      'Rohu fish pickle ': 900,
+      'Rohu fish pickle': 900,
       'Prawns pickles': 1200,
-      'murrel fish pickle':1200,
-      'chicken pickle':850 ,
+      'murrel fish pickle': 1200,
+      'chicken pickle': 850,
       'Chicken boneless pickle': 900,
-      'Mutton pickle':1200,
+      'Mutton pickle': 1200,
       'Katla fish pickle': 900,
-      'Tilapia fish pickle':800
+      'Tilapia fish pickle': 800
     };
 
     window.onload = function() {
       const keys = Object.keys(picklePrices);
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= keys.length; i++) {
         const name = keys[i - 1];
         document.getElementById(`cost${i}`).textContent = `Cost: ₹${picklePrices[name]}`;
       }
+      updateCost();
     };
 
     function selectPickle(name) {
-      alert('You selected ' + name);
+      const keys = Object.keys(picklePrices);
+      for (let i = 1; i <= keys.length; i++) {
+        if (keys[i - 1] === name) {
+          document.getElementById(`qty${i}`).focus();
+          break;
+        }
+      }
     }
 
     function updateCost() {
       let totalCost = 0;
       let selectedPickles = [];
-
       const keys = Object.keys(picklePrices);
-      for (let i = 1; i <= 10; i++) {
+
+      for (let i = 1; i <= keys.length; i++) {
         const qtyInput = document.getElementById(`qty${i}`);
         const qty = parseInt(qtyInput.value) || 0;
         const name = keys[i - 1];
         const unitCost = picklePrices[name];
         const cost = qty * unitCost;
 
+        document.getElementById(`cost${i}`).textContent = `Cost: ₹${cost}`;
         if (qty > 0) {
           selectedPickles.push(`${name}: ${qty} units`);
         }
@@ -272,7 +277,7 @@
       let selected = [];
       const keys = Object.keys(picklePrices);
 
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= keys.length; i++) {
         const qtyInput = document.getElementById(`qty${i}`);
         const qty = qtyInput.value.trim();
         if (qty && parseInt(qty) > 0) {
