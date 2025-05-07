@@ -18,18 +18,15 @@ client = Client(account_sid, auth_token)
 
 # Pickle price data
 PICKLE_INFO = {
-    'KF': ('King Fish', 120),
-    'KFP': ('King Fish Pulusu', 110),
-    'TN': ('Tuna', 130),
-    'PSN': ('Prawns Small Non-Spicy', 140),
-    'JDM': ('Jalebi Dry Mango', 125),
-    'HS': ('Hilsa', 100),
-    'PR': ('Prawns Regular', 150),
-    'MR': ('Mackerel', 135),
-    'SFP': ('Sankara Fish Pulusu', 115),
-    'KMP': ('Katla Mustard Pulusu', 160)
+    'RFP': ('Rohu Fish Pickle', 900),
+    'PR': ('Prawns Pickles', 1200),
+    'MFP': ('Murrel Fish Pickle', 1200),
+    'CP': ('Chicken Pickle', 850),
+    'CBP': ('Chicken Boneless Pickle', 900),
+    'MP': ('Mutton Pickle', 1200),
+    'KFP': ('Katla Fish Pickle', 900),
+    'TFP': ('Tilapia Fish Pickle', 800)
 }
-
 @app.route('/')
 def home():
     return render_template('english.html')
