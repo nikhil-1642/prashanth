@@ -23,12 +23,13 @@ def login_required(f):
 def get_db_connection():
     try:
         return mysql.connector.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", "root"),
-            database=os.getenv("DB_NAME", "nikhil1"),
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME"),
             auth_plugin='mysql_native_password'
         )
+
 
     except Error as e:
         print("Error connecting to MySQL:", e)
@@ -550,6 +551,7 @@ def update_profile():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
+
 
 
 
