@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
 load_dotenv()
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__, static_folder='.', static_url_path='')
   # Replace with a secure random key
 app.secret_key = os.getenv("SECRET_KEY", "fallback-key")
 # ------------------- Helpers -------------------
@@ -553,6 +553,7 @@ def update_profile():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
+
 
 
 
