@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4e54c8;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    button.update-btn {
+      padding: 5px 10px;
+      background-color: #4e54c8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button.update-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+   
+  <div style="position: absolute; top: 20px; right: 20px;">
+    <button onclick="location.href='edit_profile.html'" style="padding: 10px 20px; font-size: 1rem; background-color: #4e54c8; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;">
+      Edit Profile
+    </button>
+    <br />
+    <button onclick="location.href='/'" style="padding: 10px 20px; font-size: 1rem; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+      Home
+    </button>
+  </div>
+
+
+
+  <h1>Order Information</h1>
+  <div id="orderTableContainer">
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Pickles</th>
+          <th>Total</th>
+          <th>Status (Done)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <!-- Data will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="error" id="errorMsg"></div>
+
+  <script>
+    async function loadOrders() {
+      try {
+        const res = await fetch("/get-orders");
+        const data = await res.json();
+
+        if (data.success) {
+          const orders = data.orders;
+          const tbody = document.getElementById("ordersBody");
+          tbody.innerHTML = ""; // Clear previous
+
+          orders.forEach(order => {
+            const row = document.createElement("tr");
+
+            // Create checkbox for status
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = order.status === 1 || order.status === "1" || order.status === true || order.status === "true";
+
+
+            // Create update button
+            const updateBtn = document.createElement("button");
+            updateBtn.textContent = "Update";
+            updateBtn.classList.add("update-btn");
+
+            updateBtn.addEventListener("click", async () => {
+              const updatedStatus = checkbox.checked;
+
+              try {
+                const updateRes = await fetch("/update-order-status", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ id: order.id, status: updatedStatus })
+                });
+
+                const updateData = await updateRes.json();
+
+                if (updateData.success) {
+                  alert(`Order #${order.id} updated successfully.`);
+                } else {
+                  alert("Update failed: " + (updateData.message || ""));
+                }
+              } catch (err) {
+                alert("Error updating order: " + err.message);
+              }
+            });
+
+            // Build row content
+            row.innerHTML = `
+              <td>${order.id}</td>
+              <td>${order.pickles}</td>
+              <td>₹${parseFloat(order.cost).toFixed(2)}</td>
+              <td></td>
+              <td></td>
+            `;
+
+            row.cells[3].appendChild(checkbox);      // Status checkbox
+            row.cells[4].appendChild(updateBtn);     // Update button
+
+            tbody.appendChild(row);
+          });
+        } else {
+          document.getElementById("errorMsg").innerText = data.message || "Failed to load orders.";
+        }
+      } catch (err) {
+        document.getElementById("errorMsg").innerText = "Error loading orders: " + err.message;
+      }
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>

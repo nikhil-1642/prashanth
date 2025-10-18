@@ -1,0 +1,154 @@
+<!-- edit_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4e54c8;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3e44b0;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Edit Profile</h1>
+<a href="/demo" style="
+  display: block;
+  text-align: center;
+  margin: 30px auto 0;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #4e54c8;
+  background-color: #e0e7ff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  width: fit-content;
+  transition: background 0.3s ease;
+">
+  🏠 Back to Home
+</a>
+
+  <form id="editProfileForm">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required />
+
+    <label for="email">Email (read-only)</label>
+    <input type="email" id="email" name="email" readonly />
+
+    <label for="currentPassword">Current Password (required to change password)</label>
+    <input type="password" id="currentPassword" name="currentPassword" />
+
+    <label for="newPassword">New Password</label>
+    <input type="password" id="newPassword" name="newPassword" />
+
+    <button type="submit">Save Changes</button>
+
+    <div id="message" class="message"></div>
+  </form>
+
+  <script>
+    // Fetch user profile data
+    async function loadProfile() {
+      const res = await fetch("/get-profile");
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("name").value = data.user.name;
+        document.getElementById("email").value = data.user.email;
+      } else {
+        document.getElementById("message").textContent = "Failed to load profile.";
+      }
+    }
+
+    loadProfile();
+
+    document.getElementById("editProfileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const currentPassword = document.getElementById("currentPassword").value.trim();
+      const newPassword = document.getElementById("newPassword").value.trim();
+
+      const payload = { name };
+
+      if (currentPassword && newPassword) {
+        payload.currentPassword = currentPassword;
+        payload.newPassword = newPassword;
+      }
+
+      const res = await fetch("/update-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      const msgBox = document.getElementById("message");
+
+      if (result.success) {
+        msgBox.textContent = "Profile updated successfully!";
+        msgBox.classList.remove("error");
+      } else {
+        msgBox.textContent = result.message || "Update failed.";
+        msgBox.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 40px 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .cart-box {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .item {
+      font-size: 1.15rem;
+      margin: 12px 0;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .item span {
+      flex: 1;
+    }
+    .item button {
+      background-color: #ff5c5c;
+      border: none;
+      padding: 8px 14px;
+      color: white;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .item button:hover {
+      background-color: #e04b4b;
+    }
+    .total {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: right;
+    }
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .actions button {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .place-order {
+      background-color: #4e54c8;
+      color: #fff;
+    }
+    .place-order:hover {
+      background-color: #3a3ebd;
+    }
+    .go-back {
+      background-color: #aaa;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Your Cart</h1>
+  <div class="cart-box">
+    <div id="cartItems">Loading cart …</div>
+    <div class="total" id="cartTotal"></div>
+    <div class="actions">
+      <button class="place-order" onclick="placeOrder()">Place Order</button>
+      <button class="go-back" onclick="goBack()">← Go Back to Demo</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadCart() {
+      try {
+        const res = await fetch("/get_cart");
+        const data = await res.json();
+        if (!data.success) {
+          document.getElementById("cartItems").textContent = "Failed to load cart.";
+          return;
+        }
+
+        const items = data.cart;
+        if (!items || items.length === 0) {
+          document.getElementById("cartItems").textContent = "Your cart is empty.";
+          document.getElementById("cartTotal").textContent = "";
+          return;
+        }
+
+        let html = "";
+        let total = 0;
+
+        items.forEach(item => {
+          html += `
+            <div class="item">
+              <span>${item.quantity} x ${item.pickle_name} — ₹${item.cost}</span>
+              <button onclick="removeItem(${item.id})">Remove</button>
+            </div>
+          `;
+          total += parseFloat(item.cost);
+        });
+
+        document.getElementById("cartItems").innerHTML = html;
+        document.getElementById("cartTotal").textContent = "Total: ₹" + total.toFixed(2);
+      } catch (err) {
+        document.getElementById("cartItems").textContent = "Error loading cart: " + err.message;
+      }
+    }
+
+    async function removeItem(itemId) {
+      if (!confirm("Are you sure you want to remove this item?")) return;
+
+      try {
+        const res = await fetch("/remove_cart_item", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ id: itemId })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          loadCart(); // Refresh cart after removal
+        } else {
+          alert("Failed to remove item: " + (result.message || "Unknown error"));
+        }
+      } catch (err) {
+        alert("Error removing item: " + err.message);
+      }
+    }
+
+    async function placeOrder() {
+  const btn = document.querySelector(".place-order");
+  btn.disabled = true;
+  try {
+    const res = await fetch("/place_order_from_cart", {
+      credentials: "include",
+      method: "POST"
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert("Order placed successfully!");
+      window.location.href = result.redirect;
+    } else {
+      alert("Failed to place order: " + (result.message || "Unknown error"));
+    }
+  } catch (err) {
+    alert("Error placing order: " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+
+    function goBack() {
+      window.location.href = "/demo.html";
+    }
+
+    // Load cart on page load
+    window.addEventListener("DOMContentLoaded", loadCart);
+  </script>
+
+</body>
+</html>
