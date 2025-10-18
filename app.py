@@ -4,10 +4,12 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-app.secret_key = "nikhil@16421"  # Replace with a secure random key
-
+load_dotenv()
+app = Flask(__name__, static_folder='static', static_url_path='')
+  # Replace with a secure random key
+app.secret_key = os.getenv("SECRET_KEY", "fallback-key")
 # ------------------- Helpers -------------------
 
 def login_required(f):
@@ -551,6 +553,7 @@ def update_profile():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
+
 
 
 
