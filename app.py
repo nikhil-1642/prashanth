@@ -27,6 +27,7 @@ def get_db_connection():
         return mysql.connector.connect(
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
+            port=os.getenv("DB_PORT"),
             password=os.getenv("DB_PASSWORD"),
             database=os.getenv("DB_NAME"),
             auth_plugin='mysql_native_password'
@@ -553,6 +554,7 @@ def update_profile():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
+
 
 
 
