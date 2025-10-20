@@ -5,24 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your Orders</title>
   <style>
-    .back-link {
-  position: absolute;
-  top: 20px;
-  right: 30px;
+  .back-link {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   background-color: #4e54c8;
   color: white;
-  padding: 10px 15px;
+  border: none;
+  padding: 10px 16px;
   border-radius: 8px;
-  text-decoration: none;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+  z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease;
 }
-
-.back-link:hover {
-  background-color: #3a3ebd;
-}
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f6f8;
@@ -148,4 +146,5 @@
   </script>
 </body>
 </html>
+
 
