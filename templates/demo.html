@@ -5,109 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Order Fish Pickles</title>
   <style>
-    .quantity-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.qty-btn {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  width: 32px;
-  height: 32px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.qty-btn:hover {
-  background-color: var(--hover-bg);
-}
-
-.qty-display {
-  min-width: 30px;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.unit-price {
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-    /* Top-bar layout container */
-.top-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-/* Ensure h1 has spacing from top bar */
-h1 {
-  margin-top: 10px;
-}
-
-/* Responsive sticky Add to Cart button for mobile */
-.add-cart-btn {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 8px 15px rgba(78, 84, 200, 0.4);
-  margin-top: 10px;
-}
-
-/* Mobile sticky version */
-@media (max-width: 600px) {
-  .add-cart-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999;
-    margin-top: 0;
-  }
-
-  form#orderForm {
-    padding-bottom: 80px; /* Add space for the floating button */
-  }
-}
-
-    .cart-link {
-  position: sticky;
-  top: 20px;
-  right: 20px;
-  float: right;
-  z-index: 999;
-  background-color: var(--bg-color);
-  color: var(--primary);
-  padding: 12px 18px;
-  font-weight: bold;
-  border-radius: 10px;
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.cart-link:hover {
-  background-color: var(--primary);
-  color: white;
-}
-
     :root {
       --primary: #4e54c8;
       --secondary: #8f94fb;
@@ -131,18 +28,24 @@ h1 {
       min-height: 100vh;
     }
 
-    /* Top navigation buttons */
-    .top-nav {
+    .top-bar {
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
       gap: 10px;
-      justify-content: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
-     a {
-      height: auto;
-      width: auto;
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin: 25px 0;
+      color: white;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    a {
       text-decoration: none;
       font-weight: 600;
       font-size: 1rem;
@@ -159,12 +62,25 @@ h1 {
       color: white;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 25px;
+    .cart-link {
+      position: sticky;
+      top: 20px;
+      right: 20px;
+      float: right;
+      z-index: 999;
+      background-color: var(--bg-color);
+      color: var(--primary);
+      padding: 12px 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .cart-link:hover {
+      background-color: var(--primary);
       color: white;
-      text-shadow: 1px 1px 3px #000;
     }
 
     form#orderForm {
@@ -211,14 +127,41 @@ h1 {
       margin-bottom: 15px;
     }
 
-    input[type="number"] {
-      width: 90px;
-      padding: 10px;
-      font-size: 1.1rem;
-      border: 1.8px solid #bdc3c7;
-      border-radius: 10px;
-      text-align: center;
-      margin-bottom: 10px;
+    .unit-price {
+      font-size: 0.95rem;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .qty-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .qty-btn:hover {
+      background-color: var(--hover-bg);
+    }
+
+    .qty-display {
+      min-width: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
 
     .cost {
@@ -247,6 +190,10 @@ h1 {
       transform: scale(1.05);
     }
 
+    .add-cart-btn {
+      margin-top: 20px;
+    }
+
     .total-cost {
       margin-top: 30px;
       font-size: 1.4rem;
@@ -256,7 +203,7 @@ h1 {
     }
 
     @media (max-width: 600px) {
-      .top-nav {
+      .top-bar {
         flex-direction: column;
         align-items: center;
       }
@@ -272,100 +219,106 @@ h1 {
       form#orderForm {
         padding: 20px;
       }
+
+      .add-cart-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
- 
     <a href="/your_orders.html">📦 Your Orders</a>
     <a href="/edit_profile_user">✏️ Edit Profile</a>
     <a href="#" id="logoutBtn">🏠 Logout</a>
-     <a href="/cart.html" class="cart-link">🛒 Go to Cart</a>
-</div>
-<h1>Order Fish Pickles</h1>
+    <a href="/cart.html" class="cart-link">🛒 Go to Cart</a>
+  </div>
+
+  <h1>Order Fish Pickles</h1>
 
   <form id="orderForm">
     <label>Select Fish Pickles:</label>
     <div class="name-grid">
       {% for product in products %}
       <div>
-  <img src="{{ product.image_url }}" alt="{{ product.name }}">
-  <p><strong>{{ product.name }}</strong></p>
-  <p class="unit-price">Price: ₹{{ product.price }}</p>
+        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        <p><strong>{{ product.name }}</strong></p>
+        <p class="unit-price">Price: ₹{{ product.price }}</p>
 
-  <div class="quantity-control" data-id="{{ product.id }}">
-    <button type="button" class="qty-btn minus" data-id="{{ product.id }}">➖</button>
-    <span class="qty-display" id="qty-{{ product.id }}">0</span>
-    <button type="button" class="qty-btn plus" data-id="{{ product.id }}" data-price="{{ product.price }}">➕</button>
-  </div>
+        <div class="quantity-control" data-id="{{ product.id }}">
+          <button type="button" class="qty-btn minus" data-id="{{ product.id }}">➖</button>
+          <span class="qty-display" id="qty-{{ product.id }}">0</span>
+          <button type="button" class="qty-btn plus" data-id="{{ product.id }}" data-price="{{ product.price }}">➕</button>
+        </div>
 
-  <p class="cost" id="cost-{{ product.id }}">Cost: ₹0</p>
-  <button class="buyBtn" type="button" data-id="{{ product.id }}">🛒 Buy Now</button>
-</div>
-
+        <p class="cost" id="cost-{{ product.id }}">Cost: ₹0</p>
+        <button class="buyBtn" type="button" data-id="{{ product.id }}" data-price="{{ product.price }}">🛒 Buy Now</button>
+      </div>
       {% endfor %}
     </div>
 
     <p class="total-cost" id="totalCost">Total Cost: ₹0</p>
-
     <input type="hidden" id="pickles" name="pickles" />
     <input type="hidden" id="total" name="total" />
     <button type="submit" class="add-cart-btn">🛒 Add All to Cart</button>
-
   </form>
 
   <script>
     function updateCost() {
-  let total = 0;
-  let picklesList = [];
+      let total = 0;
+      let picklesList = [];
 
-  document.querySelectorAll(".quantity-control").forEach(ctrl => {
-    const id = ctrl.dataset.id;
-    const qty = parseInt(document.getElementById("qty-" + id).textContent) || 0;
-    const price = parseFloat(ctrl.querySelector(".plus").dataset.price);
-    const cost = qty * price;
+      document.querySelectorAll(".quantity-control").forEach(ctrl => {
+        const id = ctrl.dataset.id;
+        const qty = parseInt(document.getElementById("qty-" + id).textContent) || 0;
+        const price = parseFloat(ctrl.querySelector(".plus").dataset.price);
+        const cost = qty * price;
 
-    document.getElementById("cost-" + id).textContent = "Cost: ₹" + cost;
-    total += cost;
+        document.getElementById("cost-" + id).textContent = "Cost: ₹" + cost;
+        total += cost;
 
-    if (qty > 0) {
-      const name = ctrl.closest("div").querySelector("p strong").innerText.trim();
-      picklesList.push(`${qty} x ${name}`);
-    }
-  });
+        if (qty > 0) {
+          const name = ctrl.closest("div").querySelector("p strong").innerText.trim();
+          picklesList.push(`${qty} x ${name}`);
+        }
+      });
 
-  document.getElementById("totalCost").textContent = "Total Cost: ₹" + total;
-  document.getElementById("pickles").value = picklesList.join(", ");
-  document.getElementById("total").value = total;
-}
-
-document.querySelectorAll(".qty-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const id = btn.dataset.id;
-    const display = document.getElementById("qty-" + id);
-    let currentQty = parseInt(display.textContent) || 0;
-
-    if (btn.classList.contains("plus")) {
-      currentQty++;
-    } else if (btn.classList.contains("minus") && currentQty > 0) {
-      currentQty--;
+      document.getElementById("totalCost").textContent = "Total Cost: ₹" + total;
+      document.getElementById("pickles").value = picklesList.join(", ");
+      document.getElementById("total").value = total;
     }
 
-    display.textContent = currentQty;
-    updateCost();
-  });
-});
+    document.querySelectorAll(".qty-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const display = document.getElementById("qty-" + id);
+        let currentQty = parseInt(display.textContent) || 0;
 
-   
+        if (btn.classList.contains("plus")) {
+          currentQty++;
+        } else if (btn.classList.contains("minus") && currentQty > 0) {
+          currentQty--;
+        }
+
+        display.textContent = currentQty;
+        updateCost();
+      });
+    });
+
+    // Handle Add to Cart
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
       const items = [];
-      document.querySelectorAll(".qtyInput").forEach(input => {
-        const id = input.dataset.id;
-        const price = parseFloat(input.dataset.price);
-        const qty = parseInt(input.value) || 0;
-        const name = input.closest("div").querySelector("p").innerText.trim();
+      document.querySelectorAll(".quantity-control").forEach(ctrl => {
+        const id = ctrl.dataset.id;
+        const qty = parseInt(document.getElementById("qty-" + id).textContent) || 0;
+        const price = parseFloat(ctrl.querySelector(".plus").dataset.price);
+        const name = ctrl.closest("div").querySelector("p strong").innerText.trim();
 
         if (qty > 0) {
           items.push({ pickle_name: name, quantity: qty, cost: qty * price });
@@ -390,13 +343,13 @@ document.querySelectorAll(".qty-btn").forEach(btn => {
       }
     });
 
+    // Handle Buy Now
     document.querySelectorAll(".buyBtn").forEach(button => {
       button.addEventListener("click", async () => {
         const id = button.dataset.id;
-        const input = document.querySelector(`.qtyInput[data-id="${id}"]`);
-        const price = parseFloat(input.dataset.price);
-        const qty = parseInt(input.value) || 0;
-        const name = input.closest("div").querySelector("p").innerText.trim();
+        const qty = parseInt(document.getElementById("qty-" + id).textContent) || 0;
+        const price = parseFloat(button.dataset.price);
+        const name = button.closest("div").querySelector("p strong").innerText.trim();
 
         if (qty <= 0) {
           alert("Please enter quantity to buy.");
@@ -419,6 +372,7 @@ document.querySelectorAll(".qty-btn").forEach(btn => {
       });
     });
 
+    // Logout
     document.getElementById("logoutBtn").addEventListener("click", async (e) => {
       e.preventDefault();
       try {
