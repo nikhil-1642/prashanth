@@ -5,6 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Order Fish Pickles</title>
   <style>
+    .quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.qty-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.qty-btn:hover {
+  background-color: var(--hover-bg);
+}
+
+.qty-display {
+  min-width: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.unit-price {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
     /* Top-bar layout container */
 .top-bar {
   display: flex;
@@ -254,12 +291,20 @@ h1 {
     <div class="name-grid">
       {% for product in products %}
       <div>
-        <img src="{{ product.image_url }}" alt="{{ product.name }}">
-        <p>{{ product.name }}</p>
-        <input type="number" class="qtyInput" data-id="{{ product.id }}" data-price="{{ product.price }}" placeholder="Qty" min="1" />
-        <p class="cost" id="cost-{{ product.id }}">Cost: ₹0</p>
-        <button class="buyBtn" type="button" data-id="{{ product.id }}">🛒 Buy Now</button>
-      </div>
+  <img src="{{ product.image_url }}" alt="{{ product.name }}">
+  <p><strong>{{ product.name }}</strong></p>
+  <p class="unit-price">Price: ₹{{ product.price }}</p>
+
+  <div class="quantity-control" data-id="{{ product.id }}">
+    <button type="button" class="qty-btn minus" data-id="{{ product.id }}">➖</button>
+    <span class="qty-display" id="qty-{{ product.id }}">0</span>
+    <button type="button" class="qty-btn plus" data-id="{{ product.id }}" data-price="{{ product.price }}">➕</button>
+  </div>
+
+  <p class="cost" id="cost-{{ product.id }}">Cost: ₹0</p>
+  <button class="buyBtn" type="button" data-id="{{ product.id }}">🛒 Buy Now</button>
+</div>
+
       {% endfor %}
     </div>
 
@@ -273,36 +318,47 @@ h1 {
 
   <script>
     function updateCost() {
-      const qtyInputs = document.querySelectorAll(".qtyInput");
-      let total = 0;
-      let picklesList = [];
+  let total = 0;
+  let picklesList = [];
 
-      qtyInputs.forEach(input => {
-        const id = input.dataset.id;
-        const price = parseFloat(input.dataset.price);
-        const qty = parseInt(input.value) || 0;
-        const cost = qty * price;
-        document.getElementById("cost-" + id).textContent = "Cost: ₹" + cost;
-        total += cost;
+  document.querySelectorAll(".quantity-control").forEach(ctrl => {
+    const id = ctrl.dataset.id;
+    const qty = parseInt(document.getElementById("qty-" + id).textContent) || 0;
+    const price = parseFloat(ctrl.querySelector(".plus").dataset.price);
+    const cost = qty * price;
 
-        if (qty > 0) {
-          const name = input.closest("div").querySelector("p").innerText.trim();
-          picklesList.push(`${qty} x ${name}`);
-        }
-      });
+    document.getElementById("cost-" + id).textContent = "Cost: ₹" + cost;
+    total += cost;
 
-      document.getElementById("totalCost").textContent = "Total Cost: ₹" + total;
-      document.getElementById("pickles").value = picklesList.join(", ");
-      document.getElementById("total").value = total;
+    if (qty > 0) {
+      const name = ctrl.closest("div").querySelector("p strong").innerText.trim();
+      picklesList.push(`${qty} x ${name}`);
+    }
+  });
+
+  document.getElementById("totalCost").textContent = "Total Cost: ₹" + total;
+  document.getElementById("pickles").value = picklesList.join(", ");
+  document.getElementById("total").value = total;
+}
+
+document.querySelectorAll(".qty-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const id = btn.dataset.id;
+    const display = document.getElementById("qty-" + id);
+    let currentQty = parseInt(display.textContent) || 0;
+
+    if (btn.classList.contains("plus")) {
+      currentQty++;
+    } else if (btn.classList.contains("minus") && currentQty > 0) {
+      currentQty--;
     }
 
-    document.querySelectorAll(".qtyInput").forEach(input => {
-      input.addEventListener("input", updateCost);
-    });
+    display.textContent = currentQty;
+    updateCost();
+  });
+});
 
-    document.getElementById("orderForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      updateCost();
+   
 
       const items = [];
       document.querySelectorAll(".qtyInput").forEach(input => {
