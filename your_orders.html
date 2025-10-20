@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your Orders</title>
   <style>
+    .back-link {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background-color: #4e54c8;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.back-link:hover {
+  background-color: #3a3ebd;
+}
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f6f8;
@@ -64,7 +82,7 @@
   <h1>📦 Your Orders</h1>
   <div id="ordersContainer"></div>
 
-  <a href="/products"><button class="back-link" onclick="goBack()">← Go Back to Demo</button></a>
+  <a class="back-link" href="/products"><button class="back-link" onclick="goBack()">← Go Back to Demo</button></a>
 
   <script>
      function goBack() {
@@ -130,3 +148,4 @@
   </script>
 </body>
 </html>
+
