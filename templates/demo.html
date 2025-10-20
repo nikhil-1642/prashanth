@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order Fish Pickles</title>
+  <style>
+    .cart-link {
+  position: sticky;
+  top: 20px;
+  right: 20px;
+  float: right;
+  z-index: 999;
+  background-color: var(--bg-color);
+  color: var(--primary);
+  padding: 12px 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.cart-link:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+    :root {
+      --primary: #4e54c8;
+      --secondary: #8f94fb;
+      --text-color: #2c3e50;
+      --bg-color: #ffffffcc;
+      --hover-bg: #3a3ebd;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1760888102518-f5bb22fcf5df?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1332') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-color);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* Top navigation buttons */
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      background-color: var(--bg-color);
+      color: var(--primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav a:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+      color: white;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    form#orderForm {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--bg-color);
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+      font-size: 1.3rem;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .name-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .name-grid > div {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 15px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(52, 73, 94, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .name-grid > div:hover {
+      transform: translateY(-5px);
+    }
+
+    .name-grid img {
+      width: 100%;
+      max-width: 230px;
+      height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+
+    input[type="number"] {
+      width: 90px;
+      padding: 10px;
+      font-size: 1.1rem;
+      border: 1.8px solid #bdc3c7;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .cost {
+      margin-top: 5px;
+      font-weight: bold;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    .buyBtn, button[type="submit"] {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 8px 15px rgba(78, 84, 200, 0.4);
+      margin-top: 10px;
+    }
+
+    .buyBtn:hover, button[type="submit"]:hover {
+      background: linear-gradient(135deg, var(--hover-bg), #737bf9);
+      transform: scale(1.05);
+    }
+
+    .total-cost {
+      margin-top: 30px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: right;
+      color: var(--text-color);
+    }
+
+    @media (max-width: 600px) {
+      .top-nav {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .total-cost {
+        text-align: center;
+      }
+
+      form#orderForm {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-nav">
+    <a href="/your_orders.html">📦 Your Orders</a>
+    <a href="/edit_profile_user">✏️ Edit Profile</a>
+    <a href="#" id="logoutBtn">🏠 Logout</a>
+  </div>
+<div style="position: relative;">
+  <a href="/cart.html" class="cart-link">🛒 Go to Cart</a>
+</div>
+  <h1>Order Fish Pickles</h1>
+
+  <form id="orderForm">
+    <label>Select Fish Pickles:</label>
+    <div class="name-grid">
+      {% for product in products %}
+      <div>
+        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        <p>{{ product.name }}</p>
+        <input type="number" class="qtyInput" data-id="{{ product.id }}" data-price="{{ product.price }}" placeholder="Qty" min="1" />
+        <p class="cost" id="cost-{{ product.id }}">Cost: ₹0</p>
+        <button class="buyBtn" type="button" data-id="{{ product.id }}">🛒 Buy Now</button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="total-cost" id="totalCost">Total Cost: ₹0</p>
+
+    <input type="hidden" id="pickles" name="pickles" />
+    <input type="hidden" id="total" name="total" />
+    <button type="submit">🛒 Add All to Cart</button>
+  </form>
+
+  <script>
+    function updateCost() {
+      const qtyInputs = document.querySelectorAll(".qtyInput");
+      let total = 0;
+      let picklesList = [];
+
+      qtyInputs.forEach(input => {
+        const id = input.dataset.id;
+        const price = parseFloat(input.dataset.price);
+        const qty = parseInt(input.value) || 0;
+        const cost = qty * price;
+        document.getElementById("cost-" + id).textContent = "Cost: ₹" + cost;
+        total += cost;
+
+        if (qty > 0) {
+          const name = input.closest("div").querySelector("p").innerText.trim();
+          picklesList.push(`${qty} x ${name}`);
+        }
+      });
+
+      document.getElementById("totalCost").textContent = "Total Cost: ₹" + total;
+      document.getElementById("pickles").value = picklesList.join(", ");
+      document.getElementById("total").value = total;
+    }
+
+    document.querySelectorAll(".qtyInput").forEach(input => {
+      input.addEventListener("input", updateCost);
+    });
+
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      updateCost();
+
+      const items = [];
+      document.querySelectorAll(".qtyInput").forEach(input => {
+        const id = input.dataset.id;
+        const price = parseFloat(input.dataset.price);
+        const qty = parseInt(input.value) || 0;
+        const name = input.closest("div").querySelector("p").innerText.trim();
+
+        if (qty > 0) {
+          items.push({ pickle_name: name, quantity: qty, cost: qty * price });
+        }
+      });
+
+      if (items.length === 0) {
+        alert("Please select at least one pickle.");
+        return;
+      }
+
+      try {
+        const res = await fetch("/add_to_cart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items })
+        });
+        const result = await res.json();
+        alert(result.success ? "Items added to cart!" : "Failed to add: " + (result.message || "Unknown error"));
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+
+    document.querySelectorAll(".buyBtn").forEach(button => {
+      button.addEventListener("click", async () => {
+        const id = button.dataset.id;
+        const input = document.querySelector(`.qtyInput[data-id="${id}"]`);
+        const price = parseFloat(input.dataset.price);
+        const qty = parseInt(input.value) || 0;
+        const name = input.closest("div").querySelector("p").innerText.trim();
+
+        if (qty <= 0) {
+          alert("Please enter quantity to buy.");
+          return;
+        }
+
+        const item = { pickle_name: name, quantity: qty, cost: qty * price };
+
+        try {
+          const res = await fetch("/buy_now", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(item)
+          });
+          const result = await res.json();
+          alert(result.success ? "Purchase successful!" : "Failed: " + (result.message || "Unknown error"));
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch("/logout", {
+          method: "POST",
+          credentials: "same-origin"
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert("You have been logged out.");
+          window.location.href = "/index.html";
+        } else {
+          alert("Logout failed.");
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
