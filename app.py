@@ -4,9 +4,13 @@ import os
 import mysql.connector
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-app.secret_key = "nikhil@16421"  # Replace with a secure random key
+load_dotenv()
+app = Flask(__name__, static_folder='.', static_url_path='')
+  # Replace with a secure random key
+app.secret_key = os.getenv("SECRET_KEY", "fallback-key")
+  # Replace with a secure random key
 
 # ------------------- Helpers -------------------
 
@@ -23,10 +27,11 @@ def login_required(f):
 def get_db_connection():
     try:
         return mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="root",
-            database="nikhil1",
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            port=os.getenv("DB_PORT"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME"),
             auth_plugin='mysql_native_password'
         )
     except Error as e:
@@ -625,4 +630,5 @@ def update_profile():
 # ------------------- Run App -------------------
 
 if __name__ == "__main__":
-    app.run(port=5050, debug=True)
+    app.run(host="0.0.0.0", port=5050)
+
