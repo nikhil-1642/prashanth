@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Order Info</title>
   <style>
+    /* Remove position: fixed */
+.top-buttons {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 30px; /* pushes the content below */
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
     :root {
       --btn-purple: #4e54c8;
       --btn-green: #28a745;
@@ -56,6 +76,7 @@
       text-align: center;
       margin: 2rem 0 1rem;
       color: #333;
+      padding-top: 100px;
     }
 
     table {
@@ -128,12 +149,14 @@
 <body>
 
   <!-- Fixed Top Buttons -->
-  <div class="top-buttons">
-    <button class="edit-btn"   onclick="location.href='edit_profile.html'">Edit Profile</button>
-    <button class="insert-btn" onclick="location.href='insert.html'">Insert Product</button>
-    <button class="view-btn"   onclick="location.href='products.html'">View Products</button>
-    <button class="home-btn"   onclick="location.href='/'">Home</button>
-  </div>
+<!-- Collapsible Top Section -->
+<div class="top-buttons" id="topButtons">
+  <button class="edit-btn" onclick="location.href='edit_profile.html'">Edit Profile</button>
+  <button class="insert-btn" onclick="location.href='insert.html'">Insert Product</button>
+  <button class="view-btn" onclick="location.href='products.html'">View Products</button>
+  <button class="home-btn" onclick="location.href='/'">Home</button>
+</div>
+
 
   <!-- Content starts here -->
   <h1>Order Information</h1>
@@ -243,3 +266,4 @@
 
 </body>
 </html>
+
