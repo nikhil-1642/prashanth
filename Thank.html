@@ -1,0 +1,63 @@
+</h1><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thank You!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafc;
+      color: #34495e;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #4e54c8;
+    }
+    p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+    button {
+      background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+      border: none;
+      color: white;
+      padding: 16px 40px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(78, 84, 200, 0.4);
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+      user-select: none;
+    }
+    button:hover,
+    button:focus {
+      background: linear-gradient(135deg, #3a3ebd 0%, #737bf9 100%);
+      box-shadow: 0 10px 20px rgba(58, 62, 189, 0.7);
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Thank You!</h1>
+  <p>Your order has been placed successfully.</p>
+  <a href="/products"><button class="go-back" onclick="goBack()">← Go Back to Demo</button></a>
+</body>
+<script>
+  function goBack() {
+      window.location.href = "demo.html";
+    }
+
+</script>
+</html>

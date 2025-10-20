@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Orders</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      padding: 30px;
+      color: #2c3e50;
+    }
+    h1 {
+      text-align: center;
+      color: #34495e;
+    }
+    .order {
+      background: white;
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .order h3 {
+      margin-top: 0;
+    }
+    .order p {
+      margin: 8px 0;
+    }
+    .status {
+      font-weight: bold;
+      color: #27ae60;
+    }
+    .cancel-btn {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .cancel-btn:hover {
+      background-color: #c0392b;
+    }
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: #4e54c8;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 Your Orders</h1>
+  <div id="ordersContainer"></div>
+
+  <a href="/products"><button class="back-link" onclick="goBack()">← Go Back to Demo</button></a>
+
+  <script>
+     function goBack() {
+      window.location.href = "demo.html";
+    }
+    async function fetchOrders() {
+      try {
+        const res = await fetch("/get-orders1");
+        const data = await res.json();
+        
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = "";  // clear existing content
+
+        if (data.success && data.orders.length > 0) {
+          data.orders.forEach(order => {
+            const div = document.createElement("div");
+            div.className = "order";
+            div.innerHTML = `
+              <h3>Order</h3>
+              <p><strong>Pickles:</strong> ${order.pickles}</p>
+              <p><strong>Total:</strong> ₹${order.cost}</p>
+              <p><strong>Ordered on :</strong> ${order.created_at}</p>
+              <p><strong>Status:</strong> <span class="status">${order.status || "Pending"}</span></p>
+              <button class="cancel-btn" data-id="${order.id}">Cancel Order</button>
+            `;
+            container.appendChild(div);
+          });
+
+          // Add event listeners for all cancel buttons
+          document.querySelectorAll(".cancel-btn").forEach(button => {
+            button.addEventListener("click", async (e) => {
+              const orderId = e.target.getAttribute("data-id");
+              if (confirm("Are you sure you want to cancel this order?")) {
+                const res = await fetch("/cancel-order", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ id: orderId })
+                });
+                const result = await res.json();
+                if (result.success) {
+                  alert("Order cancelled successfully");
+                  fetchOrders(); // refresh the list
+                } else {
+                  alert("Failed to cancel order: " + (result.message || ""));
+                }
+              }
+            });
+          });
+
+        } else {
+          container.innerHTML = "<p style='text-align:center;'>You have no orders yet.</p>";
+        }
+
+      } catch (err) {
+        console.error("Failed to load orders:", err);
+        document.getElementById("ordersContainer").innerHTML = "<p style='text-align:center; color: red;'>Error loading orders.</p>";
+      }
+    }
+
+    fetchOrders();
+  </script>
+</body>
+</html>

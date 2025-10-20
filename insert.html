@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insert Product</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .product-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #4e54c8;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #4e54c8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3d43b3;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .back-button {
+      display: block;
+      margin: 1rem auto 0;
+      background-color: #6c757d;
+      text-align: center;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="product-container">
+    <h2>Insert Product</h2>
+    <form id="insertProductForm">
+      <label for="name">Product Name</label>
+      <input type="text" id="name" required />
+
+      <label for="image_url">Image URL</label>
+      <input type="url" id="image_url" required />
+
+      <label for="price">Price</label>
+      <input type="number" id="price" step="0.01" required />
+
+      <button type="submit">Insert Product</button>
+      <div class="message" id="messageBox"></div>
+    </form>
+    <a href="order_info.html" class="back-button">Back to Orders</a>
+  </div>
+
+  <script>
+    document.getElementById("insertProductForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const image_url = document.getElementById("image_url").value;
+      const price = document.getElementById("price").value;
+
+      try {
+        const res = await fetch("/insert-product", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, image_url, price }),
+        });
+
+        const data = await res.json();
+        const msgBox = document.getElementById("messageBox");
+
+        if (data.success) {
+          msgBox.style.color = "green";
+          msgBox.textContent = "Product inserted successfully.";
+        } else {
+          msgBox.style.color = "red";
+          msgBox.textContent = data.message || "Insert failed.";
+        }
+      } catch (err) {
+        document.getElementById("messageBox").textContent = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

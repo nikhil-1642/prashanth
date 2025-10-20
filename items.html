@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Page</title>
+    <style>
+        .product {
+            border: 1px solid #ccc;
+            padding: 16px;
+            margin: 16px;
+            width: 200px;
+            float: left;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .buy-button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .buy-button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Products</h1>
+    {% for product in products %}
+        <div class="product">
+            <h3>{{ product.name }}</h3>
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            <p>Price: ₹{{ product.price }}</p>
+            <button class="buy-button">Buy</button>
+        </div>
+    {% endfor %}
+</body>
+</html>

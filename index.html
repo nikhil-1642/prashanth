@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login / Register</title>
+  <style>
+    :root {
+      --bg: #f4f4f9;
+      --primary: #4e54c8;
+      --secondary: #8f94fb;
+      --text: #333;
+      --border-radius: 10px;
+      --transition-speed: 0.3s;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+     background: url('data:image/jpeg;base64,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') no-repeat center center fixed;
+      color: var(--text);
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      
+    }
+
+    .auth-container {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      padding: 2rem;
+    }
+
+    .form-toggle {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-toggle button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1rem;
+      border-bottom: 2px solid transparent;
+    }
+
+    .form-toggle button.active {
+      border-color: var(--primary);
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .form-wrapper {
+      position: relative;
+    }
+
+    .form {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form.active {
+      display: flex;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.9rem;
+    }
+
+    input {
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-container">
+    <div class="form-toggle">
+      <button id="loginBtn" class="active">Login</button>
+      <button id="registerBtn">Register</button>
+      <button id="ownerBtn">Owner Login</button>
+    </div>
+
+    <section class="form-wrapper">
+      <!-- User Login Form -->
+      <form id="loginForm" class="form active">
+        <h2>Login</h2>
+        <label>Email
+          <input type="email" id="loginEmail" required />
+        </label>
+        <label>Password
+          <input type="password" id="loginPassword" required />
+        </label>
+        <button type="submit">Login</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="form">
+        <h2>Register</h2>
+        <label>Full Name
+          <input type="text" id="regName" required />
+        </label>
+        <label>Email
+          <input type="email" id="regEmail" required />
+        </label>
+        <label>Password
+          <input type="password" id="regPassword" required />
+        </label>
+        <button type="submit">Register</button>
+      </form>
+
+      <!-- Owner Login Form -->
+      <form id="ownerForm" class="form">
+        <h2>Owner Login</h2>
+        <label>Email
+          <input type="email" id="ownerEmail" required />
+        </label>
+        <label>Password
+          <input type="password" id="ownerPassword" required />
+        </label>
+        <a href="/products"></a><button type="submit">Login as Owner</button></a>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Toggle buttons
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const ownerBtn = document.getElementById("ownerBtn");
+
+    // Forms
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const ownerForm = document.getElementById("ownerForm");
+
+    // Toggle function
+    function toggleForm(activeForm) {
+      [loginForm, registerForm, ownerForm].forEach(f => f.classList.remove("active"));
+      activeForm.classList.add("active");
+
+      [loginBtn, registerBtn, ownerBtn].forEach(b => b.classList.remove("active"));
+      if (activeForm === loginForm) loginBtn.classList.add("active");
+      else if (activeForm === registerForm) registerBtn.classList.add("active");
+      else if (activeForm === ownerForm) ownerBtn.classList.add("active");
+    }
+
+    // Toggle Events
+    loginBtn.addEventListener("click", () => toggleForm(loginForm));
+    registerBtn.addEventListener("click", () => toggleForm(registerForm));
+    ownerBtn.addEventListener("click", () => toggleForm(ownerForm));
+
+    // User Login Submit
+    // User Login Submit
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // send cookies for session
+      body: JSON.stringify({ email, password })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      // redirect after Flask JSON response
+      window.location.href = result.redirect || "/products";
+    } else {
+      alert(result.message || "Invalid email or password.");
+    }
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+});
+
+    // Owner Login Submit
+    ownerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("ownerEmail").value;
+      const password = document.getElementById("ownerPassword").value;
+
+      try {
+        const res = await fetch("/owner-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          window.location.href = "order_info.html"; // Redirect owner after login
+        } else {
+          alert(result.message || "Owner login failed.");
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+
+    // Register Submit
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("regName").value;
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPassword").value;
+
+      try {
+        const res = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          alert("Registration completed");
+          window.location.href = "index.html";
+          
+        } else {
+          alert(result.message || "Registration failed.");
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
