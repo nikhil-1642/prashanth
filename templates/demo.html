@@ -103,7 +103,9 @@ h1 {
       margin-bottom: 30px;
     }
 
-    .top-nav a {
+     a {
+      height: auto;
+      width: auto;
       text-decoration: none;
       font-weight: 600;
       font-size: 1rem;
@@ -115,7 +117,7 @@ h1 {
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .top-nav a:hover {
+    a:hover {
       background-color: var(--primary);
       color: white;
     }
@@ -239,16 +241,13 @@ h1 {
 <body>
 
   <div class="top-bar">
-  <div class="top-nav">
+ 
     <a href="/your_orders.html">📦 Your Orders</a>
     <a href="/edit_profile_user">✏️ Edit Profile</a>
     <a href="#" id="logoutBtn">🏠 Logout</a>
-  </div>
-  <a href="/cart.html" class="cart-link">🛒 Go to Cart</a>
+     <a href="/cart.html" class="cart-link">🛒 Go to Cart</a>
 </div>
 <h1>Order Fish Pickles</h1>
-
-  <h1>Order Fish Pickles</h1>
 
   <form id="orderForm">
     <label>Select Fish Pickles:</label>
